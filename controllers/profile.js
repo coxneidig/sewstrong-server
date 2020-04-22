@@ -4,6 +4,9 @@ const JWT = require('jsonwebtoken');
 const DB = require('../models');
 const ROUTER = require('express').Router();
 
+//helper functions
+const errorCatch = require('../errorCatch') 
+
 // PUT /profile/:id - edit user info and reissue token
 ROUTER.put('/:id', (req, res) => {
     DB.User.findByIdAndUpdate(req.params.id, req.body, {new: true})
@@ -13,10 +16,7 @@ ROUTER.put('/:id', (req, res) => {
         })
         res.send({ token })
     })
-    .catch(err => {
-        console.log('Error updating user', err)
-        res.status(503).send({message: 'Internal server error'})
-    })
+    .catch(err => errorCatch(err, 'Error updating user', res, 503, 'Internal Server Error'))
 })
 
 
@@ -27,10 +27,7 @@ ROUTER.get('/:id', (req, res) => {
     .then(user => {
         res.send(user)
     })
-    .catch(err => {
-        console.log('Error finding user', err)
-        res.status(503).send({message: 'Internal server error'})
-    })
+    .catch(err => errorCatch(err, 'Error finding user', res, 503, 'Internal Server Error'))
 })
 
 module.exports = ROUTER;

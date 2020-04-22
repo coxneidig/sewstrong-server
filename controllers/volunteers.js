@@ -29,10 +29,22 @@ ROUTER.get('/', (req, res) => {
     .then(volunteers => {
         res.send(volunteers)
     })
-    .catch(err => {
-        console.log('Error finding volunteers', err)
-        res.status(503).send({message: 'Internal server error'})
+    .catch(err => errorCatch(err, 'Error finding volunteers', res, 503, 'Internal Server Error'))
+})
+
+ROUTER.get('/inventory/:id', (req, res) => {
+      //if not admin or user w/ maker id === req.body.maker, send forbidden
+      if(!req.user.is_admin && (req.user.maker && (req.user.maker._id != req.params.id))) {
+        res.status(403).send({message: 'Forbidden'})
+        return
+    }
+
+    DB.Inventory.find({maker: req.params.id})
+    .populate('product')
+    .then(inventory => {
+        res.send(inventory)
     })
+    .catch(err => errorCatch(err, 'Error finding inventory', res, 503, 'Internal Server Error'))
 })
 
 //PUT /volunteers/inventory - admin or volunteer/maker post new production inventory
@@ -60,10 +72,7 @@ ROUTER.put('/inventory', (req, res) => {
                 console.log('updated inventory', updatedInventory)
                 res.send(updatedInventory)
             })
-            .catch(err => {
-                console.log('Error updating inventory', err)
-                res.status(503).send({message: 'Internal server error'})
-            })
+            .catch(err => errorCatch(err, 'Error updating inventory', res, 503, 'Internal Server Error'))
         }
         else {
             //otherwise, create new & push into maker
@@ -77,27 +86,14 @@ ROUTER.put('/inventory', (req, res) => {
                     .then(updatedMaker => {
                         res.send(updatedMaker)
                     })
-                    .catch(err => {
-                        console.log('Error adding inventory to maker', err)
-                        res.status(503).send({message: 'Internal server error'})
-                    })
+                    .catch(err => errorCatch(err, 'Error adding inventory to maker', res, 503, 'Internal Server Error'))
                 })
-                .catch(err => {
-                    console.log('Error finding maker', err)
-                    res.status(503).send({message: 'Internal server error'})
-                })
+                .catch(err => errorCatch(err, 'Error finding maker', res, 503, 'Internal Server Error'))
             })
-            .catch(err => {
-                console.log('Error creating inventory', err)
-                res.status(503).send({message: 'Internal server error'})
-            })
+            .catch(err => errorCatch(err, 'Error creating inventory', res, 503, 'Internal Server Error'))
         }
     })
-    .catch(err => {
-        console.log('Error looking for inventory', err)
-        res.status(503).send({message: 'Internal server error'})
-    })
- 
+    .catch(err => errorCatch(err, 'Error looking for inventory', res, 503, 'Internal Server Error'))
 })
 
 //POST /volunteers/account/:id - create new account and add to existing user

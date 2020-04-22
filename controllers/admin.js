@@ -1,6 +1,8 @@
 const DB = require('../models');
 const ROUTER = require('express').Router();
-const JWT = require('jsonwebtoken');
+
+//helper functions
+const errorCatch = require('../errorCatch') 
 
 
 //GET ALL DATA FOR ADMIN
@@ -115,20 +117,11 @@ ROUTER.get('/', (req, res) => {
                 data.push({orders: orders})
                 res.send(data)
             })
-            .catch(err => {
-                console.log('Error finding orders', err)
-                res.status(503).send({message: 'Internal server error'})
-            })
+            .catch(err => errorCatch(err, 'Error finding orders', res, 503, 'Internal Server Error'))
         })
-        .catch(err => {
-            console.log('Error finding customers', err)
-            res.status(503).send({message: 'Internal server error'})
-        })
+        .catch(err => errorCatch(err, 'Error finding customers', res, 503, 'Internal Server Error'))
     })
-    .catch(err => {
-        console.log('Error finding volunteers', err)
-        res.status(503).send({message: 'Internal server error'})
-    })
+    .catch(err => errorCatch(err, 'Error finding volunteers', res, 503, 'Internal Server Error'))
 
 })
 

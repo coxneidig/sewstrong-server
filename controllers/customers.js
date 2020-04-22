@@ -22,10 +22,7 @@ ROUTER.get('/', (req, res) => {
     .then(customers => {
         res.send(customers)
     })
-    .catch(err => {
-        console.log('Error finding customers', err)
-        res.status(503).send({message: 'Internal server error'})
-    })
+    .catch(err => errorCatch(err, 'Error finding customers', res, 503, 'Internal Server Error')) 
 })
 
 
@@ -82,10 +79,7 @@ ROUTER.get('/:id', (req, res) => {
     .then(user => {
         res.send(user)
     })
-    .catch(err => {
-        console.log('Error finding customer', err)
-        res.status(503).send({message: 'Internal server error'})
-    })
+    .catch(err => errorCatch(err, 'Error finding customer', res, 503, 'Internal Server Error')) 
 })
 
 

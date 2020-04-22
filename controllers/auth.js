@@ -42,10 +42,7 @@ ROUTER.post('/login', (req, res) => {
         });
         res.send({ token });
     })
-    .catch(err => {
-        console.log(`Error in POST /auth/login. ${err}`);
-        res.status(503).send({ message: 'Database error.'});
-    });
+    .catch(err => errorCatch(err, 'Error in POST /auth/login', res, 503, 'Internal Server Error'))
 });
 
 // POST /auth/signup/volunteer - sign up for volunteer
@@ -116,26 +113,14 @@ ROUTER.post('/signup/volunteer', (req, res) => {
                                 });
                                 res.send({ token });
                             })
-                            .catch(err => {
-                                console.log(`Error populating new user. ${err}`);
-                                res.status(500).send({ message: 'Internal server error.'})
-                            });
+                            .catch(err => errorCatch(err, 'Error populating new user', res, 503, 'Internal Server Error'))
                         }) 
-                        .catch(err => {
-                            console.log(`Error creating new user. ${err}`);
-                            res.status(500).send({ message: 'Internal server error.'})
-                        });
+                        .catch(err => errorCatch(err, 'Error creating new user', res, 503, 'Internal Server Error'))
                     })
-                    .catch(err => {
-                        console.log(`Error adding inventory to maker. ${err}`);
-                        res.status(500).send({ message: 'Internal server error.'})
-                    });
+                    .catch(err => errorCatch(err, 'Error adding inventory to maker', res, 503, 'Internal Server Error'))
                 })          
             })
-            .catch(err => {
-                console.log(`Error creating new maker account. ${err}`);
-                res.status(500).send({ message: 'Internal server error.'})
-            });
+            .catch(err => errorCatch(err, 'Error creating new maker account', res, 503, 'Internal Server Error'))
         }
 
         //IF USER SIGNING UP IS A DRIVER
@@ -168,20 +153,11 @@ ROUTER.post('/signup/volunteer', (req, res) => {
                         });
                         res.send({ token });
                     })
-                    .catch(err => {
-                        console.log(`Error populating new user. ${err}`);
-                        res.status(500).send({ message: 'Internal server error.'})
-                    });
+                    .catch(err => errorCatch(err, 'Error populating new user', res, 503, 'Internal Server Error'))
                 })
-                .catch(err => {
-                    console.log(`Error creating new user. ${err}`);
-                    res.status(500).send({ message: 'Internal server error.'})
-                });
+                .catch(err => errorCatch(err, 'Error creating new user', res, 503, 'Internal Server Error'))
             })
-            .catch(err => {
-                console.log(`Error creating new account. ${err}`);
-                res.status(500).send({ message: 'Internal server error.'})
-            }); 
+            .catch(err => errorCatch(err, 'Error creating new account', res, 503, 'Internal Server Error'))
         }
 
         //IF USER SIGNING UP IS A MAKER & DRIVER
@@ -250,31 +226,16 @@ ROUTER.post('/signup/volunteer', (req, res) => {
                                     });
                                     res.send({ token });
                                 })
-                                .catch(err => {
-                                    console.log(`Error populating new user. ${err}`);
-                                    res.status(500).send({ message: 'Internal server error.'})
-                                });
+                                .catch(err => errorCatch(err, 'Error populating new user', res, 503, 'Internal Server Error'))
                             }) 
-                            .catch(err => {
-                                console.log(`Error creating new user. ${err}`);
-                                res.status(500).send({ message: 'Internal server error.'})
-                            });
+                            .catch(err => errorCatch(err, 'Error creating new user', res, 503, 'Internal Server Error'))
                         })
-                        .catch(err => {
-                            console.log(`Error adding inventory to maker. ${err}`);
-                            res.status(500).send({ message: 'Internal server error.'})
-                        });
+                        .catch(err => errorCatch(err, 'Error adding inventory to maker', res, 503, 'Internal Server Error'))
                     })          
                 })
-                .catch(err => {
-                    console.log(`Error creating new account. ${err}`);
-                    res.status(500).send({ message: 'Internal server error.'})
-                });
+                .catch(err => errorCatch(err, 'Error creating new maker account', res, 503, 'Internal Server Error'))
             })
-            .catch(err => {
-                console.log(`Error creating new account. ${err}`);
-                res.status(500).send({ message: 'Internal server error.'})
-            }); 
+            .catch(err => errorCatch(err, 'Error creating new driver account', res, 503, 'Internal Server Error')) 
         }
 
         //IF OTHER
@@ -287,16 +248,10 @@ ROUTER.post('/signup/volunteer', (req, res) => {
                 });
                 res.send({ token });
             })
-            .catch(err => {
-                console.log(`Error creating new user. ${err}`);
-                res.status(500).send({ message: 'Internal server error.'})
-            });
+            .catch(err => errorCatch(err, 'Error creating new user', res, 503, 'Internal Server Error'))
         }
     })
-    .catch(err => {
-        console.log(`Error in POST /auth/signup. ${err}`);
-        res.status(503).send({ message: 'Database error checking email.' })
-    });
+    .catch(err => errorCatch(err, 'Error in POST auth/signup/volunteer', res, 503, 'Internal Server Error'))
 });
 
 //POST /auth/signup/order - sign up customer & place order request
@@ -365,31 +320,16 @@ ROUTER.post('/signup/order', (req, res) => {
                             });
                             res.send({ token })
                         })
-                        .catch(err => {
-                            console.log('Error populating new user', err)
-                            res.status(503).send('Internal server error')
-                        })  
+                        .catch(err => errorCatch(err, 'Error populating new user', res, 503, 'Internal Server Error')) 
                     })
-                    .catch(err => {
-                        console.log('Error updating user', err)
-                        res.status(503).send('Internal server error')
-                    })
+                    .catch(err => errorCatch(err, 'Error updating new user', res, 503, 'Internal Server Error'))
                 })     
             })
-            .catch(err => {
-                console.log(`Error creating new user. ${err}`);
-                res.status(500).send({ message: 'Internal server error.'})
-            });  
+            .catch(err => errorCatch(err, 'Error creating new user', res, 503, 'Internal Server Error'))  
         })
-        .catch(err => {
-            console.log(`Error creating new organization. ${err}`);
-            res.status(503).send({ message: 'Internal server error.' })
-        });  
+        .catch(err => errorCatch(err, 'Error creating new organization', res, 503, 'Internal Server Error'))    
     })
-    .catch(err => {
-        console.log('Error checking for email', err)
-        res.status(503).send({message: 'Internal server error'})
-    })
+    .catch(err => errorCatch(err, 'Error checking email', res, 503, 'Internal Server Error'))  
 })
 
 ROUTER.get('/info', (req, res) => {

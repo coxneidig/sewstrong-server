@@ -1,13 +1,13 @@
 const DB = require('../models');
 const ROUTER = require('express').Router();
 
+//helper functions
+const errorCatch = require('../errorCatch') 
+
 //GET  /products - All products
 ROUTER.get('/', (req, res) => {
     DB.Product.find().then(products => res.send(products))
-    .catch(err => {
-        console.log('Error finding products', err)
-        res.status(503).send('Internal server error')
-    })
+    .catch(err => errorCatch(err, 'Error finding products', res, 503, 'Internal Server Error'))
 })
 
 
@@ -18,10 +18,7 @@ ROUTER.post('/', (req, res) => {
 
         DB.Product.create(req.body)
         .then(product => res.send({message: `${product.name} : ${product.startDate}`}))
-        .catch(err => {
-            console.log('Error creating product', err)
-            res.status(503).send({message: 'Internal server error'})
-        })
+        .catch(err => errorCatch(err, 'Error creating product', res, 503, 'Internal Server Error'))
     }
     else {
         res.status(403).send({message: 'Forbidden'})
